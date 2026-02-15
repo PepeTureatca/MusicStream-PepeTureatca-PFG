@@ -1,0 +1,129 @@
+/* --- TRANSICIÓN GLOBAL --- */
+.sidebar, .search-form, .grid-container, .player-bar {
+    transition: all 0.3s ease;
+}
+
+/* --- HAMBURGUESA SOLO EN TABLET/MÓVIL --- */
+.hamburger-btn {
+    display: none; /* default desktop */
+}
+
+@media (max-width: 1024px) {
+    .hamburger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        font-size: 20px;
+        z-index: 1100;
+    }
+}
+
+/* --- SIDEBAR COLAPSABLE --- */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+    }
+    .sidebar.active {
+        left: 0;
+    }
+}
+
+/* --- TOP BAR Y FLECHAS --- */
+@media (max-width: 600px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 0 12px;
+    }
+
+    /* Ocultar flechas de navegación en móvil pequeño */
+    .history-nav {
+        display: none;
+    }
+}
+
+/* --- USER PILL ADAPTATIVO --- */
+@media (max-width: 600px) {
+    .user-pill {
+        padding-right: 8px;
+        font-size: 12px;
+    }
+    .user-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+}
+
+/* --- GRILLA RESPONSIVE --- */
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+    .card-title {
+        font-size: 14px;
+    }
+    .card-description {
+        font-size: 11px;
+    }
+}
+
+/* --- MAIN CONTENT PADDING --- */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 16px;
+    }
+}
+
+/* --- PLAYER BAR MÓVIL --- */
+@media (max-width: 1024px) {
+    .player-bar {
+        flex-direction: column;
+        justify-content: center;
+        height: auto;
+        padding: 8px 16px;
+        gap: 8px;
+    }
+    .song-info, .player-controls, .volume-controls {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+}
+
+/* --- BARRA DE BÚSQUEDA RESPONSIVE --- */
+@media (max-width: 1024px) {
+    .search-form {
+        width: 100%;
+        flex-direction: row;
+    }
+    .search-form input {
+        font-size: 12px;
+        padding: 4px 8px;
+        height: 28px;
+    }
+    .search-form button {
+        font-size: 14px;
+        padding: 4px;
+    }
+}

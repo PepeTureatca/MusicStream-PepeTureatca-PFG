@@ -1,0 +1,22 @@
+# Ignorar dependencias de Composer
+/vendor/
+
+# Ignorar archivos subidos por usuarios
+/uploads/
+
+# Ignorar configuraciones locales
+.env
+.env.local
+*.local.php
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs y temporales
+*.log
+*.tmp
+
+# Ignorar IDEs
+.idea/
+.vscode/
