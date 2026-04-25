@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedTrack = card;
         document.querySelector('.song-title').textContent = card.dataset.title || 'Cancion Actual';
         document.querySelector('.artist-name').textContent = card.dataset.artist || 'Artista Desconocido';
+        const cover = document.querySelector('.player-cover-image');
+        if (cover && card.dataset.cover) {
+            cover.src = card.dataset.cover;
+        }
     };
 
     const loadTrack = (card) => {
@@ -133,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.currentTime = ratio * duration;
     });
 
-    // Volumen
-    volumeBar.addEventListener('click', (e) => {
+    volumeBar.addEventListener('click', e => {
         const rect = volumeBar.getBoundingClientRect();
         const rawVolume = (e.clientX - rect.left) / rect.width;
         audio.volume = Math.min(1, Math.max(0, rawVolume));
