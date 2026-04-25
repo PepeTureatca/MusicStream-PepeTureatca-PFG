@@ -91,7 +91,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 
                 <div class="dropdown-menu">
                     <a href="#" class="dropdown-item">Cuenta</a>
-                    <a href="#" class="dropdown-item">Perfil</a>
+                    <a href="profile.php" class="dropdown-item">Perfil</a>
                     <div class="dropdown-divider"></div>
                     <a href="logout.php" class="dropdown-item logout">Cerrar sesión</a>
                 </div>

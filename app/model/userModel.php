@@ -48,4 +48,39 @@ class User
             return false;
         }
     }
+
+    public static function encontrarPorNombre($name)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("SELECT id FROM users WHERE name = ?");
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public static function obtenerPorId($id)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("SELECT id, name, email, google_id FROM users WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public static function actualizar($id, $name, $email)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $name, $email, $id);
+        return $stmt->execute();
+    }
+
+    public static function actualizarPassword($id, $nuevaPassword)
+    {
+        $conn = conn();
+        $hashed = password_hash($nuevaPassword, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt->bind_param("si", $hashed, $id);
+        return $stmt->execute();
+    }
 }
