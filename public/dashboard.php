@@ -108,7 +108,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
                     data-audio="player.php?id=<?php echo $c['id']; ?>"
                     data-title="<?php echo htmlspecialchars($c['title']); ?>"
                     data-artist="<?php echo htmlspecialchars($c['artist']); ?>">
-                    <img src="<?php echo htmlspecialchars($c['cover_url']); ?>" alt="Portada" class="card-image-placeholder">
+                    <img src="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
                     <h3 class="card-title"><?php echo htmlspecialchars($c['title']); ?></h3>
                     <p class="card-description"><?php echo htmlspecialchars($c['artist']); ?></p>
                 </div>
