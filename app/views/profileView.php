@@ -148,7 +148,7 @@
                     <i class="fa-solid fa-caret-down"></i>
                 </div>
                 <div class="dropdown-menu">
-                    <a href="#" class="dropdown-item">Cuenta</a>
+                    <a href="/mi-spotify/public/cuenta.php" class="dropdown-item">Cuenta</a>
                     <a href="/mi-spotify/public/profile.php" class="dropdown-item">Perfil</a>
                     <div class="dropdown-divider"></div>
                     <a href="/mi-spotify/public/logout.php" class="dropdown-item logout">Cerrar sesión</a>
@@ -178,44 +178,17 @@
                 <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
-            <!-- Editar información básica -->
+            <!-- Editar identidad de perfil -->
             <div class="profile-section">
-                <h3>Información de la cuenta</h3>
-                <form method="post" action="/mi-spotify/public/profile.php?action=update">
+                <h3>Perfil público</h3>
+                <form method="post" action="/mi-spotify/public/profile.php?action=updateProfile">
                     <div class="form-group">
-                        <label for="name">Nombre</label>
+                        <label for="name">Nombre de usuario</label>
                         <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Correo electrónico</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>"
-                            <?php echo !empty($user['google_id']) ? 'readonly title="No puedes cambiar el email de una cuenta de Google"' : ''; ?> required>
                     </div>
                     <button type="submit" class="btn-save">Guardar cambios</button>
                 </form>
             </div>
-
-            <!-- Cambiar contraseña (solo si no es cuenta Google) -->
-            <?php if (empty($user['google_id'])): ?>
-            <div class="profile-section">
-                <h3>Cambiar contraseña</h3>
-                <form method="post" action="/mi-spotify/public/profile.php?action=updatePassword">
-                    <div class="form-group">
-                        <label for="current_password">Contraseña actual</label>
-                        <input type="password" id="current_password" name="current_password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="new_password">Nueva contraseña</label>
-                        <input type="password" id="new_password" name="new_password" minlength="8" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm_password">Confirmar nueva contraseña</label>
-                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
-                    </div>
-                    <button type="submit" class="btn-save">Cambiar contraseña</button>
-                </form>
-            </div>
-            <?php endif; ?>
         </div>
     </main>
 </div>
