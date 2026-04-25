@@ -121,7 +121,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 <!-- Player bar -->
 <div class="player-bar">
     <div class="song-info">
-        <img src="" alt="Portada" class="song-image-placeholder" style="width: 56px; height: 56px; border-radius: 4px; background: #2a2a2a; object-fit: cover;">
+        <img src="" alt="Portada" class="player-cover-image" style="width: 56px; height: 56px; border-radius: 4px; background: #2a2a2a; object-fit: cover;">
         <div class="song-details">
             <h4 class="song-title">Canción Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
@@ -158,68 +158,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 <audio id="audio-player"></audio>
 
 <!-- JS -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const audio = document.getElementById('audio-player');
-    const playBtn = document.querySelector('.play-pause');
-    const progressBar = document.querySelector('.progress-bar');
-    const progressFill = document.querySelector('.progress');
-    const currentTimeEl = document.querySelector('.current-time');
-    const totalTimeEl = document.querySelector('.total-time');
-    const volumeBar = document.querySelector('.volume-bar');
-    const volumeFill = document.querySelector('.volume');
-
-    // Click en tarjeta
-    document.querySelectorAll('.playlist-card').forEach(card => {
-        card.addEventListener('click', () => {
-            audio.src = card.dataset.audio;
-            audio.play();
-            document.querySelector('.song-title').textContent = card.dataset.title;
-            document.querySelector('.artist-name').textContent = card.dataset.artist;
-            playBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
-        });
-    });
-
-    // Play/Pause
-    playBtn.addEventListener('click', () => {
-        if(audio.paused){
-            audio.play();
-            playBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
-        } else {
-            audio.pause();
-            playBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
-        }
-    });
-
-    // Progreso
-    audio.addEventListener('timeupdate', () => {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progressFill.style.width = percent + '%';
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-        totalTimeEl.textContent = formatTime(audio.duration);
-    });
-
-    progressBar.addEventListener('click', e => {
-        const rect = progressBar.getBoundingClientRect();
-        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-    });
-
-    // Volumen
-    volumeBar.addEventListener('click', e => {
-        const rect = volumeBar.getBoundingClientRect();
-        audio.volume = (e.clientX - rect.left) / rect.width;
-        volumeFill.style.width = (audio.volume * 100) + '%';
-    });
-
-    function formatTime(seconds){
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60).toString().padStart(2,'0');
-        return `${min}:${sec}`;
-    }
-});
-</script>
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/player.js"></script>
 </body>
 </html>
