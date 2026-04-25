@@ -1,5 +1,5 @@
 /* --- TRANSICIÓN GLOBAL --- */
-.sidebar, .search-form, .grid-container, .player-bar {
+.sidebar, .search-form, .grid-container {
     transition: all 0.3s ease;
 }
 
@@ -92,22 +92,6 @@
 @media (max-width: 1024px) {
     .main-content {
         padding: 16px;
-    }
-}
-
-/* --- PLAYER BAR MÓVIL --- */
-@media (max-width: 1024px) {
-    .player-bar {
-        flex-direction: column;
-        justify-content: center;
-        height: auto;
-        padding: 8px 16px;
-        gap: 8px;
-    }
-    .song-info, .player-controls, .volume-controls {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 8px;
     }
 }
 
