@@ -1,5 +1,3 @@
-// dashboard.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- TOGGLE SIDEBAR EN MÓVIL ---
     const sidebar = document.querySelector('.sidebar');
@@ -36,7 +34,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // --- PLAYER JS (opcional si usas player.js separado) ---
-    // Puedes inicializar aquí tus controles de audio si quieres
 });
