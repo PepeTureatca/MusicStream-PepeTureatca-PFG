@@ -25,6 +25,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 
 <!-- CSS -->
 <link rel="stylesheet" href="assets/css/dashboard.css">
+<link rel="stylesheet" href="assets/css/player.css">
 <link rel="stylesheet" href="assets/css/responsiveDashboard.css">
 
 <!-- Fonts & Icons -->
@@ -121,7 +122,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 <!-- Player bar -->
 <div class="player-bar">
     <div class="song-info">
-        <img src="" alt="Portada" class="player-cover-image" style="width: 56px; height: 56px; border-radius: 4px; background: #2a2a2a; object-fit: cover;">
+        <img src="" alt="Portada" class="player-cover-image">
         <div class="song-details">
             <h4 class="song-title">Canción Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
