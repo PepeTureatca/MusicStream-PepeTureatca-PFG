@@ -107,7 +107,8 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
                 <div class="card playlist-card"
                     data-audio="player.php?id=<?php echo $c['id']; ?>"
                     data-title="<?php echo htmlspecialchars($c['title']); ?>"
-                    data-artist="<?php echo htmlspecialchars($c['artist']); ?>">
+                    data-artist="<?php echo htmlspecialchars($c['artist']); ?>"
+                    data-cover="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>">
                     <img src="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
                     <h3 class="card-title"><?php echo htmlspecialchars($c['title']); ?></h3>
                     <p class="card-description"><?php echo htmlspecialchars($c['artist']); ?></p>
@@ -120,7 +121,7 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
 <!-- Player bar -->
 <div class="player-bar">
     <div class="song-info">
-        <div class="song-image-placeholder"></div>
+        <img src="" alt="Portada" class="song-image-placeholder" style="width: 56px; height: 56px; border-radius: 4px; background: #2a2a2a; object-fit: cover;">
         <div class="song-details">
             <h4 class="song-title">Canción Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
