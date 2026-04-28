@@ -1,3 +1,4 @@
+
 <?php
 // iniciarSesion.php (vista)
 require_once __DIR__ . '/../app/controller/AuthController.php';
@@ -7,7 +8,11 @@ $error = '';
 
 // Si el usuario ya está logueado, lo redirigimos
 if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
+    if (($_SESSION['user_role'] ?? 'user') === 'admin') {
+        header("Location: dashboardAdmin.php");
+    } else {
+        header("Location: dashboard.php");
+    }
     exit;
 }
 
@@ -65,6 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="login-link">
                     ¿No tienes cuenta? <a href="registrarse.php">Regístrate</a>
+                </div>
+
+                <div class="login-link">
+                    ¿Necesitas crear un admin? <a href="altaAdmin.php">Alta admin</a>
                 </div>
 
                 <div class="divider"></div>
