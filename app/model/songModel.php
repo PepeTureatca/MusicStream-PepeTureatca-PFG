@@ -39,10 +39,39 @@ class Song
     // Crear una nueva canción
     public static function crear($titulo, $artista, $album, $duracion, $genero, $audio_url, $cover_url)
     {
+        $result = self::crearConResultado($titulo, $artista, $album, $duracion, $genero, $audio_url, $cover_url);
+        return $result['ok'] ? $result['id'] : false;
+    }
+
+    // Crear canción con detalle de error para depuración/controlador
+    public static function crearConResultado($titulo, $artista, $album, $duracion, $genero, $audio_url, $cover_url)
+    {
         $conn = conn();
         $stmt = $conn->prepare("INSERT INTO songs (title, artist, album, duration, genre, audio_url, cover_url, created_at)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+
+        if (!$stmt) {
+            return [
+                'ok' => false,
+                'id' => null,
+                'error' => 'Prepare failed: ' . $conn->error,
+            ];
+        }
+
         $stmt->bind_param("sssdsss", $titulo, $artista, $album, $duracion, $genero, $audio_url, $cover_url);
-        return $stmt->execute() ? $conn->insert_id : false;
+
+        if (!$stmt->execute()) {
+            return [
+                'ok' => false,
+                'id' => null,
+                'error' => 'Execute failed: ' . $stmt->error,
+            ];
+        }
+
+        return [
+            'ok' => true,
+            'id' => $conn->insert_id,
+            'error' => null,
+        ];
     }
 }
