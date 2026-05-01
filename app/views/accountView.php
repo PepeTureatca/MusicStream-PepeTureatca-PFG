@@ -66,6 +66,11 @@
                 <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
+            <div class="plan-square <?php echo !empty($user['is_premium']) ? 'plan-premium' : 'plan-normal'; ?>">
+                <span class="plan-label">Plan actual</span>
+                <strong><?php echo !empty($user['is_premium']) ? 'Premium' : 'Usuario normal'; ?></strong>
+            </div>
+
             <div class="account-section">
                 <h3>Correo de acceso</h3>
                 <?php if (!empty($user['google_id'])): ?>
