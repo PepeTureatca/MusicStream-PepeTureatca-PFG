@@ -72,6 +72,10 @@
                     <?php if (!empty($user['google_id'])): ?>
                         <p><i class="fa-brands fa-google" style="color:#ea4335;"></i> Cuenta vinculada con Google</p>
                     <?php endif; ?>
+                    <div class="plan-square <?php echo !empty($user['is_premium']) ? 'plan-premium' : 'plan-normal'; ?>">
+                        <span class="plan-label">Plan</span>
+                        <strong><?php echo !empty($user['is_premium']) ? 'Premium' : 'Usuario normal'; ?></strong>
+                    </div>
                 </div>
             </div>
 

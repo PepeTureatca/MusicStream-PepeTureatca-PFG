@@ -97,7 +97,7 @@ class User
     public static function obtenerPorId($id)
     {
         $conn = conn();
-        $stmt = $conn->prepare("SELECT id, name, email, google_id FROM users WHERE id = ?");
+        $stmt = $conn->prepare("SELECT id, name, email, google_id, is_premium FROM users WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
