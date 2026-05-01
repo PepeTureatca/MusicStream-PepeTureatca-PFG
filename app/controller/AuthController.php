@@ -23,7 +23,7 @@ class AuthController
         }
 
         if (User::verificarPassword($email, $password)) {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_role'] = $user['role'] ?? 'user';
@@ -47,7 +47,7 @@ class AuthController
         $userId = User::crearUsuario($name, $email, $password);
         if ($userId) {
             // Logueamos automáticamente al usuario tras registrarse
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_id'] = $userId;
             $_SESSION['user_name'] = $name;
             $_SESSION['user_role'] = 'user';
@@ -70,7 +70,7 @@ class AuthController
 
         $userId = User::crearAdmin($name, $email, $password);
         if ($userId) {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_id'] = $userId;
             $_SESSION['user_name'] = $name;
             $_SESSION['user_role'] = 'admin';
@@ -79,5 +79,80 @@ class AuthController
         }
 
         return "No se pudo crear el admin. Revisa permisos de BD y vuelve a intentarlo.";
+    }
+
+    public static function showLogin()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (isset($_SESSION['user_id'])) {
+            if (($_SESSION['user_role'] ?? 'user') === 'admin') {
+                header("Location: /mi-spotify/public/dashboardAdmin.php");
+            } else {
+                header("Location: /mi-spotify/public/dashboard.php");
+            }
+            exit;
+        }
+
+        $error = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $error = self::login($email, $password) ?? '';
+        }
+
+        require_once __DIR__ . '/../services/GoogleClient.php';
+        $googleLoginUrl = GoogleClientService::getClient()->createAuthUrl();
+        require_once __DIR__ . '/../views/loginView.php';
+    }
+
+    public static function showRegister()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (isset($_SESSION['user_id'])) {
+            header("Location: /mi-spotify/public/dashboard.php");
+            exit;
+        }
+
+        $error = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'] ?? 'Usuario';
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $error = self::register($name, $email, $password) ?? '';
+        }
+
+        require_once __DIR__ . '/../services/GoogleClient.php';
+        $googleLoginUrl = GoogleClientService::getClient()->createAuthUrl();
+        require_once __DIR__ . '/../views/registerView.php';
+    }
+
+    public static function showAltaAdmin()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (isset($_SESSION['user_id']) && (($_SESSION['user_role'] ?? 'user') === 'admin')) {
+            header("Location: /mi-spotify/public/dashboardAdmin.php");
+            exit;
+        }
+
+        $error = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $adminKey = $_POST['admin_key'] ?? '';
+
+            if ($name === '' || $email === '' || $password === '' || $adminKey === '') {
+                $error = 'Rellena todos los campos.';
+            } elseif (strlen($password) < 8) {
+                $error = 'La contraseña debe tener al menos 8 caracteres.';
+            } else {
+                $error = self::registerAdmin($name, $email, $password, $adminKey) ?? '';
+            }
+        }
+
+        require_once __DIR__ . '/../views/altaAdminView.php';
     }
 }
