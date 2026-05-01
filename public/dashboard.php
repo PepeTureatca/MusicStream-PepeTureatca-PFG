@@ -3,13 +3,18 @@ session_start();
 
 // Seguridad: si el usuario no tiene sesión, fuera
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: iniciarSesion.php");
     exit;
 }
 
 require_once __DIR__ . '/../app/controller/SongController.php';
 
 $userName = $_SESSION['user_name'] ?? 'Usuario';
+$isAdmin = (($_SESSION['user_role'] ?? 'user') === 'admin');
+if ($isAdmin) {
+    header("Location: dashboardAdmin.php");
+    exit;
+}
 
 // Obtener búsqueda si existe
 $busqueda = $_GET['q'] ?? '';
@@ -69,8 +74,9 @@ $canciones = $busqueda ? SongController::buscar($busqueda) : SongController::lis
         </nav>
 
         <div class="promo-card">
-            <p class="promo-title">MusicStream Premium</p>
+            <p class="promo-title"><i class="fa-solid fa-crown" style="color:#f59e0b;margin-right:6px"></i>MusicStream Premium</p>
             <p class="promo-text">Disfruta de música sin anuncios y saltos ilimitados.</p>
+            <a href="checkout.php" class="promo-btn">Hazte Premium &rarr;</a>
         </div>
     </aside>
 
