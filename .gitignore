@@ -16,6 +16,21 @@ Thumbs.db
 # Ignorar logs y temporales
 *.log
 *.tmp
+*.cache
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+*~
+
+# Ignorar caches y runtime de PHP
+/.phpunit.result.cache
+/.phpunit.cache/
+/.php-cs-fixer.cache
+/.phpstan.cache/
+/.phpstan/
+/public/user.ini
 
 # Ignorar IDEs
 .idea/
