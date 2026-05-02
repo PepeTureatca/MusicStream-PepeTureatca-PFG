@@ -252,21 +252,26 @@ class SongController
             exit;
         }
 
-        $currentView = (($_GET['view'] ?? 'all') === 'likes') ? 'likes' : 'all';
+        require_once __DIR__ . '/../model/playlistModel.php';
+
+        $rawView  = $_GET['view'] ?? 'all';
         $busqueda = trim($_GET['q'] ?? '');
 
-        if ($currentView === 'likes') {
+        if ($rawView === 'likes') {
+            $currentView = 'likes';
             $canciones = $busqueda !== ''
                 ? Song::buscarFavoritasPorUsuario($userId, $busqueda)
                 : Song::obtenerFavoritasPorUsuario($userId);
             $sectionTitle = $busqueda !== '' ? 'Resultados en favoritos' : 'Tus canciones favoritas';
         } else {
+            $currentView  = 'all';
             $canciones = $busqueda !== '' ? self::buscar($busqueda) : self::listarTodas();
             $sectionTitle = $busqueda !== '' ? 'Resultados de busqueda' : 'Canciones disponibles';
         }
 
         $likedSongIds = Song::obtenerIdsLikePorUsuario($userId);
-        $likesCount = count($likedSongIds);
+        $likesCount   = count($likedSongIds);
+        $playlists    = Playlist::obtenerPorUsuario($userId);
 
         require_once __DIR__ . '/../views/dashboardView.php';
     }

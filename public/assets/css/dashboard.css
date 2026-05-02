@@ -1,4 +1,4 @@
-/* --- VARIABLES Y RESET --- */
+﻿/* --- VARIABLES Y RESET --- */
 :root {
     --bg-color: #121212;
     --sidebar-bg: #000000;
@@ -81,7 +81,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* --- ESTILOS DE NAVEGACIÓN (Enlaces y Botón Buscar) --- */
+/* --- ESTILOS DE NAVEGACIÃ“N (Enlaces y BotÃ³n Buscar) --- */
 .nav-menu a,
 .playlist-menu a,
 .nav-btn.search-btn {
@@ -125,11 +125,11 @@ body {
 .search-toggle.active .search-form {
     display: flex;
     flex-direction: row;
-    /* Input y botón en línea */
+    /* Input y botÃ³n en lÃ­nea */
     align-items: center;
     gap: 6px;
     margin: 6px 0 12px 0;
-    /* Separa de botón y elementos de abajo */
+    /* Separa de botÃ³n y elementos de abajo */
     width: 100%;
     animation: fadeIn 0.3s ease;
 }
