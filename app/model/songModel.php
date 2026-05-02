@@ -36,6 +36,104 @@ class Song
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public static function obtenerIdsLikePorUsuario(int $userId)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("SELECT song_id FROM likes WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $ids = [];
+        while ($row = $result->fetch_assoc()) {
+            $ids[] = (int) $row['song_id'];
+        }
+
+        return $ids;
+    }
+
+    public static function buscarFavoritasPorUsuario(int $userId, string $query)
+    {
+        $conn = conn();
+        $query = trim($query);
+        if ($query === '') {
+            $stmt = $conn->prepare(
+                "SELECT s.*
+                 FROM songs s
+                 INNER JOIN likes l ON l.song_id = s.id
+                 WHERE l.user_id = ?
+                 ORDER BY l.created_at DESC"
+            );
+            $stmt->bind_param("i", $userId);
+        } else {
+            $likeQuery = '%' . $query . '%';
+            $stmt = $conn->prepare(
+                "SELECT s.*
+                 FROM songs s
+                 INNER JOIN likes l ON l.song_id = s.id
+                 WHERE l.user_id = ?
+                   AND (s.title LIKE ? OR s.artist LIKE ? OR s.album LIKE ?)
+                 ORDER BY l.created_at DESC"
+            );
+            $stmt->bind_param("isss", $userId, $likeQuery, $likeQuery, $likeQuery);
+        }
+
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public static function obtenerFavoritasPorUsuario(int $userId)
+    {
+        return self::buscarFavoritasPorUsuario($userId, '');
+    }
+
+    public static function contarLikesPorUsuario(int $userId)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM likes WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return (int) ($row['total'] ?? 0);
+    }
+
+    private static function usuarioTieneLike(int $userId, int $songId)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("SELECT id FROM likes WHERE user_id = ? AND song_id = ?");
+        $stmt->bind_param("ii", $userId, $songId);
+        $stmt->execute();
+        return (bool) $stmt->get_result()->fetch_assoc();
+    }
+
+    public static function alternarLike(int $userId, int $songId)
+    {
+        $conn = conn();
+        if (self::usuarioTieneLike($userId, $songId)) {
+            $stmt = $conn->prepare("DELETE FROM likes WHERE user_id = ? AND song_id = ?");
+            $stmt->bind_param("ii", $userId, $songId);
+            $ok = $stmt->execute();
+
+            return [
+                'ok' => $ok,
+                'liked' => false,
+                'count' => self::contarLikesPorUsuario($userId),
+                'error' => $ok ? null : $stmt->error,
+            ];
+        }
+
+        $stmt = $conn->prepare("INSERT INTO likes (user_id, song_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $userId, $songId);
+        $ok = $stmt->execute();
+
+        return [
+            'ok' => $ok,
+            'liked' => $ok,
+            'count' => self::contarLikesPorUsuario($userId),
+            'error' => $ok ? null : $stmt->error,
+        ];
+    }
+
     // Crear una nueva canción
     public static function crear($titulo, $artista, $album, $duracion, $genero, $audio_url, $cover_url)
     {

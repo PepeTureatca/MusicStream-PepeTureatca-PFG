@@ -244,6 +244,7 @@ class SongController
             exit;
         }
 
+        $userId = (int) $_SESSION['user_id'];
         $userName = $_SESSION['user_name'] ?? 'Usuario';
         $isAdmin = (($_SESSION['user_role'] ?? 'user') === 'admin');
         if ($isAdmin) {
@@ -251,8 +252,21 @@ class SongController
             exit;
         }
 
-        $busqueda = $_GET['q'] ?? '';
-        $canciones = $busqueda ? self::buscar($busqueda) : self::listarTodas();
+        $currentView = (($_GET['view'] ?? 'all') === 'likes') ? 'likes' : 'all';
+        $busqueda = trim($_GET['q'] ?? '');
+
+        if ($currentView === 'likes') {
+            $canciones = $busqueda !== ''
+                ? Song::buscarFavoritasPorUsuario($userId, $busqueda)
+                : Song::obtenerFavoritasPorUsuario($userId);
+            $sectionTitle = $busqueda !== '' ? 'Resultados en favoritos' : 'Tus canciones favoritas';
+        } else {
+            $canciones = $busqueda !== '' ? self::buscar($busqueda) : self::listarTodas();
+            $sectionTitle = $busqueda !== '' ? 'Resultados de busqueda' : 'Canciones disponibles';
+        }
+
+        $likedSongIds = Song::obtenerIdsLikePorUsuario($userId);
+        $likesCount = count($likedSongIds);
 
         require_once __DIR__ . '/../views/dashboardView.php';
     }
@@ -424,6 +438,56 @@ class SongController
         exit;
     }
 
+    public static function toggleLike()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        header('Content-Type: application/json; charset=UTF-8');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            self::respondJson(405, [
+                'ok' => false,
+                'message' => 'Metodo no permitido.',
+            ]);
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            self::respondJson(401, [
+                'ok' => false,
+                'message' => 'Debes iniciar sesion para dar like.',
+            ]);
+        }
+
+        $songId = isset($_POST['song_id']) ? (int) $_POST['song_id'] : 0;
+        if ($songId <= 0) {
+            self::respondJson(400, [
+                'ok' => false,
+                'message' => 'Cancion invalida.',
+            ]);
+        }
+
+        if (!self::mostrar($songId)) {
+            self::respondJson(404, [
+                'ok' => false,
+                'message' => 'La cancion no existe.',
+            ]);
+        }
+
+        $result = Song::alternarLike((int) $_SESSION['user_id'], $songId);
+        if (!$result['ok']) {
+            self::respondJson(500, [
+                'ok' => false,
+                'message' => 'No se pudo actualizar el like.',
+            ]);
+        }
+
+        self::respondJson(200, [
+            'ok' => true,
+            'liked' => (bool) $result['liked'],
+            'count' => (int) $result['count'],
+        ]);
+    }
+
     private static function toBytes($value)
     {
         $value = trim((string) $value);
@@ -444,5 +508,12 @@ class SongController
             default:
                 return (int) $number;
         }
+    }
+
+    private static function respondJson($statusCode, $payload)
+    {
+        http_response_code((int) $statusCode);
+        echo json_encode($payload);
+        exit;
     }
 }
