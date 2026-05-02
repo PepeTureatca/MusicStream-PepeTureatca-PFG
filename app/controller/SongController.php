@@ -291,6 +291,9 @@ class SongController
                 ];
             } elseif (($_POST['action'] ?? '') === 'upload_song') {
                 $uploadFeedback = self::subirCancion($_POST, $_FILES);
+            } elseif (($_POST['action'] ?? '') === 'delete_song') {
+                $songId = isset($_POST['song_id']) ? (int) $_POST['song_id'] : 0;
+                $uploadFeedback = self::eliminarCancion($songId);
             }
         }
 
@@ -298,6 +301,44 @@ class SongController
         $canciones = $busqueda ? self::buscar($busqueda) : self::listarTodas();
 
         require_once __DIR__ . '/../views/dashboardAdminView.php';
+    }
+
+    private static function eliminarCancion($songId)
+    {
+        if ($songId <= 0) {
+            return ['ok' => false, 'message' => 'ID de canción inválido.'];
+        }
+
+        $cancion = self::mostrar($songId);
+        if (!$cancion) {
+            return ['ok' => false, 'message' => 'La canción no existe o ya fue eliminada.'];
+        }
+
+        $deleteResult = Song::eliminarPorId($songId);
+        if (!$deleteResult['ok']) {
+            return [
+                'ok' => false,
+                'message' => 'No se pudo eliminar la canción en BD. ' . ($deleteResult['error'] ?? ''),
+            ];
+        }
+
+        if (($deleteResult['deleted_rows'] ?? 0) < 1) {
+            return ['ok' => false, 'message' => 'No se eliminó ninguna canción.'];
+        }
+
+        $projectRoot = dirname(__DIR__, 2);
+        $audioPath = $projectRoot . '/uploads/music/' . basename((string) ($cancion['audio_url'] ?? ''));
+        $coverPath = $projectRoot . '/uploads/artCover/' . basename((string) ($cancion['cover_url'] ?? ''));
+
+        if (is_file($audioPath)) {
+            @unlink($audioPath);
+        }
+
+        if (is_file($coverPath)) {
+            @unlink($coverPath);
+        }
+
+        return ['ok' => true, 'message' => 'Canción eliminada correctamente (ID ' . $songId . ').'];
     }
 
     public static function stream()

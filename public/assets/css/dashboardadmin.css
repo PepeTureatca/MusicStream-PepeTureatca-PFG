@@ -238,3 +238,31 @@ body.admin-dashboard .upload-submit-btn:active {
         text-align: center;
     }
 }
+
+body.admin-dashboard .playlist-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+body.admin-dashboard .admin-song-actions {
+    margin-top: 4px;
+}
+
+body.admin-dashboard .admin-delete-btn {
+    width: 100%;
+    border: 1px solid rgba(231, 76, 60, 0.7);
+    background: rgba(231, 76, 60, 0.12);
+    color: #ffb3a8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.admin-dashboard .admin-delete-btn:hover {
+    background: rgba(231, 76, 60, 0.22);
+    color: #ffd2ca;
+}
