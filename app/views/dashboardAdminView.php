@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MusicStream - Dashboard Admin</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/css/dashboard.css">
 <link rel="stylesheet" href="assets/css/dashboardadmin.css">
 <link rel="stylesheet" href="assets/css/player.css">
@@ -150,6 +151,11 @@
                     <img src="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
                     <h3 class="card-title"><?php echo htmlspecialchars($c['title']); ?></h3>
                     <p class="card-description"><?php echo htmlspecialchars($c['artist']); ?></p>
+                    <form method="post" action="dashboardAdmin.php" class="admin-song-actions" onsubmit="return confirm('¿Seguro que quieres eliminar esta canción?');">
+                        <input type="hidden" name="action" value="delete_song">
+                        <input type="hidden" name="song_id" value="<?php echo (int) $c['id']; ?>">
+                        <button type="submit" class="admin-delete-btn">Eliminar</button>
+                    </form>
                 </div>
             <?php endforeach; ?>
         </div>

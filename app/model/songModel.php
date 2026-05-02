@@ -74,4 +74,35 @@ class Song
             'error' => null,
         ];
     }
+
+    // Eliminar una canción por ID
+    public static function eliminarPorId($id)
+    {
+        $conn = conn();
+        $stmt = $conn->prepare("DELETE FROM songs WHERE id = ?");
+
+        if (!$stmt) {
+            return [
+                'ok' => false,
+                'error' => 'Prepare failed: ' . $conn->error,
+                'deleted_rows' => 0,
+            ];
+        }
+
+        $stmt->bind_param("i", $id);
+
+        if (!$stmt->execute()) {
+            return [
+                'ok' => false,
+                'error' => 'Execute failed: ' . $stmt->error,
+                'deleted_rows' => 0,
+            ];
+        }
+
+        return [
+            'ok' => true,
+            'error' => null,
+            'deleted_rows' => $stmt->affected_rows,
+        ];
+    }
 }
