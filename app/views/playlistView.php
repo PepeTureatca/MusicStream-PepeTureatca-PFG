@@ -1,21 +1,30 @@
 <?php
-$currentView     = $currentView     ?? 'all';
-$likedSongIds    = $likedSongIds    ?? [];
-$likesCount      = $likesCount      ?? 0;
-$busqueda        = $busqueda        ?? '';
-$userName        = $userName        ?? 'Usuario';
-$sectionTitle    = $sectionTitle    ?? 'Canciones disponibles';
-$canciones       = $canciones       ?? [];
-$playlists       = $playlists       ?? [];
-$playlistId      = $playlistId      ?? 0;
-$currentPlaylist = $currentPlaylist ?? null;
+/**
+ * Variables esperadas desde PlaylistController::showPlaylist()
+ * @var array  $canciones
+ * @var array  $currentPlaylist
+ * @var string $userName
+ * @var int    $playlistId
+ * @var array  $playlists
+ * @var array  $likedSongIds
+ * @var int    $likesCount
+ */
+$fmtDuration = function(int $secs): string {
+    if ($secs <= 0) return '--:--';
+    return sprintf('%d:%02d', intdiv($secs, 60), $secs % 60);
+};
+$totalSecs = array_sum(array_column($canciones, 'duration'));
+$totalFmt  = $totalSecs > 3600
+    ? sprintf('%dh %02dm', intdiv($totalSecs, 3600), intdiv($totalSecs % 3600, 60))
+    : sprintf('%d min', intdiv($totalSecs, 60));
+$pageTitle = htmlspecialchars($currentPlaylist['name'], ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MusicStream - Dashboard</title>
+<title><?php echo $pageTitle; ?> - MusicStream</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/css/dashboard.css">
 <link rel="stylesheet" href="assets/css/player.css">
@@ -24,7 +33,11 @@ $currentPlaylist = $currentPlaylist ?? null;
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body data-current-view="<?php echo htmlspecialchars($currentView, ENT_QUOTES, 'UTF-8'); ?>" data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>" data-playlists="<?php echo htmlspecialchars(json_encode(array_map(fn($p) => ['id' => (int)$p['id'], 'name' => $p['name']], $playlists)), ENT_QUOTES, 'UTF-8'); ?>" data-playlist-id="<?php echo (int) $playlistId; ?>">
+<body
+    data-current-view="playlist"
+    data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>"
+    data-playlists="<?php echo htmlspecialchars(json_encode(array_map(fn($p) => ['id' => (int)$p['id'], 'name' => $p['name']], $playlists)), ENT_QUOTES, 'UTF-8'); ?>"
+    data-playlist-id="<?php echo (int) $playlistId; ?>">
 <div class="dashboard-container">
     <aside class="sidebar">
         <div class="logo-container">
@@ -34,17 +47,14 @@ $currentPlaylist = $currentPlaylist ?? null;
 
         <nav class="nav-menu">
             <ul>
-                <li><a href="dashboard.php" class="<?php echo $currentView === 'all' ? 'active' : ''; ?>"><i class="fa-solid fa-house"></i> Inicio</a></li>
+                <li><a href="dashboard.php"><i class="fa-solid fa-house"></i> Inicio</a></li>
                 <li class="search-toggle">
                     <button class="nav-btn search-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span class="search-text">Buscar</span>
                     </button>
                     <form method="get" action="dashboard.php" class="search-form">
-                        <?php if ($currentView === 'likes'): ?>
-                            <input type="hidden" name="view" value="likes">
-                        <?php endif; ?>
-                        <input type="text" name="q" placeholder="Cancion, artista o album..." value="<?php echo htmlspecialchars($busqueda); ?>">
+                        <input type="text" name="q" placeholder="Cancion, artista o album..." autocomplete="off">
                         <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </form>
                 </li>
@@ -61,7 +71,7 @@ $currentPlaylist = $currentPlaylist ?? null;
                         <i class="fa-solid fa-plus-square"></i> Crear Lista de Reproduccion
                     </button>
                 </li>
-                <li><a href="dashboard.php?view=likes" class="<?php echo $currentView === 'likes' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Favoritos <span class="count likes-count"><?php echo (int) $likesCount; ?></span></a></li>
+                <li><a href="dashboard.php?view=likes"><i class="fa-solid fa-heart"></i> Favoritos <span class="count likes-count"><?php echo (int) $likesCount; ?></span></a></li>
             </ul>
             <?php if (!empty($playlists)): ?>
             <div class="sidebar-playlists-divider"></div>
@@ -69,7 +79,7 @@ $currentPlaylist = $currentPlaylist ?? null;
                 <?php foreach ($playlists as $pl): ?>
                 <li class="sidebar-playlist-item">
                     <a href="playlist.php?id=<?php echo (int) $pl['id']; ?>"
-                       class="sidebar-playlist-link"
+                       class="sidebar-playlist-link <?php echo ((int)$playlistId === (int)$pl['id']) ? 'active' : ''; ?>"
                        title="<?php echo htmlspecialchars($pl['name'], ENT_QUOTES, 'UTF-8'); ?>">
                         <i class="fa-solid fa-music"></i>
                         <span class="sidebar-playlist-name"><?php echo htmlspecialchars($pl['name'], ENT_QUOTES, 'UTF-8'); ?></span>
@@ -92,8 +102,8 @@ $currentPlaylist = $currentPlaylist ?? null;
     <main class="main-content">
         <header class="top-bar">
             <div class="history-nav">
-                <button class="nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="nav-btn" onclick="history.back()"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="nav-btn" onclick="history.forward()"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
 
             <div class="user-menu-container">
@@ -114,33 +124,95 @@ $currentPlaylist = $currentPlaylist ?? null;
             <button class="nav-btn hamburger-btn"><i class="fa-solid fa-bars"></i></button>
         </header>
 
-        <h2 class="section-title"><?php echo htmlspecialchars($sectionTitle); ?></h2>
+        <div class="pl-view">
 
-        <div class="grid-container playlist-grid">
-    <?php if (empty($canciones)): ?>
-        <p class="empty-state-message">No hay canciones en esta vista todavia.</p>
-    <?php endif; ?>
-    <?php foreach ($canciones as $c): ?>
-        <div class="card playlist-card"
-            data-song-id="<?php echo (int) $c['id']; ?>"
-            data-audio="player.php?id=<?php echo $c['id']; ?>"
-            data-title="<?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?>"
-            data-artist="<?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?>"
-            data-cover="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>">
-
-            <div class="card-cover-wrapper">
-                <img src="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
-            </div>
-
-            <h3 class="card-title"><?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p class="card-description"><?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?></p>
-
-            <div class="card-footer">
-                <button class="btn-icon card-menu-btn" data-song-id="<?php echo (int) $c['id']; ?>" title="Opciones"><i class="fa-solid fa-ellipsis"></i></button>
+    <!-- HERO -->
+    <div class="pl-hero">
+        <div class="pl-hero-art"><i class="fa-solid fa-music"></i></div>
+        <div class="pl-hero-info">
+            <span class="pl-hero-label">Lista de reproduccion</span>
+            <h1 class="pl-hero-title"><?php echo htmlspecialchars($currentPlaylist['name'], ENT_QUOTES, 'UTF-8'); ?></h1>
+            <?php if (!empty($currentPlaylist['description'])): ?>
+            <p class="pl-hero-desc"><?php echo htmlspecialchars($currentPlaylist['description'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <?php endif; ?>
+            <div class="pl-hero-meta">
+                <strong><?php echo htmlspecialchars($userName, ENT_QUOTES, 'UTF-8'); ?></strong>
+                <span class="pl-hero-meta-dot"></span>
+                <span><?php echo count($canciones); ?> canciones</span>
+                <?php if ($totalSecs > 0): ?>
+                <span class="pl-hero-meta-dot"></span>
+                <span><?php echo $totalFmt; ?></span>
+                <?php endif; ?>
             </div>
         </div>
-    <?php endforeach; ?>
-</div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="pl-hero-actions">
+        <button class="pl-play-btn" id="plPlayAllBtn" title="Reproducir todo">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <button class="pl-delete-btn" data-playlist-id="<?php echo (int) $playlistId; ?>" id="plDeleteBtn">
+            <i class="fa-solid fa-trash"></i> Eliminar lista
+        </button>
+    </div>
+
+    <!-- TRACKLIST -->
+    <div class="pl-tracklist">
+        <?php if (empty($canciones)): ?>
+        <div class="pl-empty">
+            <i class="fa-solid fa-music"></i>
+            Esta lista esta vacia. Busca canciones y usa el boton <strong>···</strong> para añadirlas.
+        </div>
+        <?php else: ?>
+        <div class="pl-tracklist-header">
+            <span class="pl-col-num">#</span>
+            <span>Titulo</span>
+            <span class="pl-col-duration"><i class="fa-regular fa-clock"></i></span>
+            <span class="pl-col-actions"></span>
+        </div>
+        <?php foreach ($canciones as $i => $c): ?>
+        <div class="pl-track playlist-card"
+             data-song-id="<?php echo (int) $c['id']; ?>"
+             data-audio="player.php?id=<?php echo $c['id']; ?>"
+             data-title="<?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?>"
+             data-artist="<?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?>"
+             data-cover="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>">
+
+            <div class="pl-track-num">
+                <span class="num-label"><?php echo $i + 1; ?></span>
+                <span class="num-play"><i class="fa-solid fa-play"></i></span>
+            </div>
+
+            <div class="pl-track-info">
+                <img src="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>" alt="" class="pl-track-cover">
+                <div class="pl-track-text">
+                    <span class="pl-track-title"><?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?></span>
+                    <span class="pl-track-artist"><?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?></span>
+                </div>
+            </div>
+
+            <span class="pl-track-duration"><?php echo $fmtDuration((int) $c['duration']); ?></span>
+
+            <div class="pl-track-actions">
+                <button class="btn-icon remove-from-playlist-btn"
+                        data-song-id="<?php echo (int) $c['id']; ?>"
+                        data-playlist-id="<?php echo (int) $playlistId; ?>"
+                        title="Quitar de la lista">
+                    <i class="fa-solid fa-circle-minus"></i>
+                </button>
+                <button class="btn-icon card-menu-btn"
+                        data-song-id="<?php echo (int) $c['id']; ?>"
+                        title="Mas opciones">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+
+</div><!-- /.pl-view -->
     </main>
 </div>
 
