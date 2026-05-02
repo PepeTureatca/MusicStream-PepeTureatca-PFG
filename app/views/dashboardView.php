@@ -1,3 +1,12 @@
+<?php
+$currentView = $currentView ?? 'all';
+$likedSongIds = $likedSongIds ?? [];
+$likesCount = $likesCount ?? 0;
+$busqueda = $busqueda ?? '';
+$userName = $userName ?? 'Usuario';
+$sectionTitle = $sectionTitle ?? 'Canciones disponibles';
+$canciones = $canciones ?? [];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-current-view="<?php echo htmlspecialchars($currentView, ENT_QUOTES, 'UTF-8'); ?>" data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>">
 <div class="dashboard-container">
     <aside class="sidebar">
         <div class="logo-container">
@@ -21,13 +30,16 @@
 
         <nav class="nav-menu">
             <ul>
-                <li><a href="#" class="active"><i class="fa-solid fa-house"></i> Inicio</a></li>
+                <li><a href="dashboard.php" class="<?php echo $currentView === 'all' ? 'active' : ''; ?>"><i class="fa-solid fa-house"></i> Inicio</a></li>
                 <li class="search-toggle">
                     <button class="nav-btn search-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span class="search-text">Buscar</span>
                     </button>
                     <form method="get" action="dashboard.php" class="search-form">
+                        <?php if ($currentView === 'likes'): ?>
+                            <input type="hidden" name="view" value="likes">
+                        <?php endif; ?>
                         <input type="text" name="q" placeholder="Cancion, artista o album..." value="<?php echo htmlspecialchars($busqueda); ?>">
                         <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </form>
@@ -41,7 +53,7 @@
         <nav class="playlist-menu">
             <ul>
                 <li><a href="#"><i class="fa-solid fa-plus-square"></i> Crear Lista de Reproduccion</a></li>
-                <li><a href="#"><i class="fa-solid fa-heart"></i> Favoritos <span class="count">0</span></a></li>
+                <li><a href="dashboard.php?view=likes" class="<?php echo $currentView === 'likes' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Favoritos <span class="count likes-count"><?php echo (int) $likesCount; ?></span></a></li>
             </ul>
         </nav>
 
@@ -77,11 +89,15 @@
             <button class="nav-btn hamburger-btn"><i class="fa-solid fa-bars"></i></button>
         </header>
 
-        <h2 class="section-title">Canciones disponibles</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($sectionTitle); ?></h2>
 
         <div class="grid-container playlist-grid">
+    <?php if (empty($canciones)): ?>
+        <p class="empty-state-message">No hay canciones en esta vista todavia.</p>
+    <?php endif; ?>
     <?php foreach ($canciones as $c): ?>
         <div class="card playlist-card"
+            data-song-id="<?php echo (int) $c['id']; ?>"
             data-audio="player.php?id=<?php echo $c['id']; ?>"
             data-title="<?php echo htmlspecialchars($c['title']); ?>"
             data-artist="<?php echo htmlspecialchars($c['artist']); ?>"
@@ -104,7 +120,7 @@
             <h4 class="song-title">Cancion Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
         </div>
-        <button class="btn-icon like-btn"><i class="fa-regular fa-heart"></i></button>
+        <button class="btn-icon like-btn" type="button" aria-label="Dar o quitar like" disabled><i class="fa-regular fa-heart"></i></button>
     </div>
 
     <div class="player-controls">

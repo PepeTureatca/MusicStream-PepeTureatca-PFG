@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const pageBody = document.body;
   const audio = document.getElementById("audio-player");
   const playBtn = document.querySelector(".play-pause");
   const progress = document.querySelector(".progress");
@@ -8,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const volumeBar = document.querySelector(".volume-bar");
   const volumeFill = document.querySelector(".volume");
   const cards = Array.from(document.querySelectorAll(".playlist-card"));
+  const likeBtn = document.querySelector(".like-btn");
+  const likesCountEl = document.querySelector(".likes-count");
 
   if (
     !audio ||
@@ -22,12 +25,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  let likedSongIds;
+  try {
+    likedSongIds = new Set(
+      JSON.parse(pageBody?.dataset.likedSongIds || "[]").map(Number),
+    );
+  } catch {
+    likedSongIds = new Set();
+  }
+
+  const currentView = pageBody?.dataset.currentView || "all";
   let selectedTrack = null;
+  let currentSongId = null;
 
   const setPlayIcon = (isPlaying) => {
     playBtn.innerHTML = isPlaying
       ? '<i class="fa-solid fa-circle-pause"></i>'
       : '<i class="fa-solid fa-circle-play"></i>';
+  };
+
+  const syncLike = (isLiked) => {
+    if (likesCountEl) likesCountEl.textContent = likedSongIds.size;
+    if (!likeBtn) return;
+    likeBtn.innerHTML = `<i class="${isLiked ? "fa-solid" : "fa-regular"} fa-heart"></i>`;
+    likeBtn.classList.toggle("is-liked", isLiked);
+    likeBtn.disabled = !currentSongId;
   };
 
   const updateTrackInfo = (card) => {
@@ -36,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     selectedTrack = card;
+    currentSongId = Number(card.dataset.songId || 0) || null;
     document.querySelector(".song-title").textContent =
       card.dataset.title || "Cancion Actual";
     document.querySelector(".artist-name").textContent =
@@ -44,6 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cover && card.dataset.cover) {
       cover.src = card.dataset.cover;
     }
+
+    syncLike(currentSongId !== null && likedSongIds.has(currentSongId));
   };
 
   const loadTrack = (card) => {
@@ -167,6 +192,32 @@ document.addEventListener("DOMContentLoaded", () => {
   audio.volume = 0.7;
   volumeFill.style.width = "70%";
   setPlayIcon(false);
+  syncLike(false);
+
+  likeBtn?.addEventListener("click", async () => {
+    if (!currentSongId) return;
+    likeBtn.disabled = true;
+    try {
+      const res = await fetch("like.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: new URLSearchParams({ song_id: currentSongId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.message);
+      data.liked
+        ? likedSongIds.add(currentSongId)
+        : likedSongIds.delete(currentSongId);
+      syncLike(data.liked);
+      if (currentView === "likes" && !data.liked) location.reload();
+    } catch (err) {
+      console.error("Error al actualizar el like:", err);
+    } finally {
+      likeBtn.disabled = !currentSongId;
+    }
+  });
 
   function formatTime(seconds) {
     const min = Math.floor(seconds / 60);

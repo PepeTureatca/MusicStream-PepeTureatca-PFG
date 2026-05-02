@@ -49,6 +49,16 @@
     color: var(--text-primary);
 }
 
+.like-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.like-btn.is-liked,
+.like-btn.is-liked:hover {
+    color: #ff4d6d;
+}
+
 .player-controls {
     display: flex;
     flex-direction: column;

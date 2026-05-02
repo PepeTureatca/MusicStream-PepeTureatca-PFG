@@ -1,3 +1,12 @@
+<?php
+$busqueda = $busqueda ?? '';
+$userName = $userName ?? 'Admin';
+$limitsTooLow = $limitsTooLow ?? false;
+$uploadMax = $uploadMax ?? '0';
+$postMax = $postMax ?? '0';
+$uploadFeedback = $uploadFeedback ?? null;
+$canciones = $canciones ?? [];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -144,6 +153,7 @@
         <div class="grid-container playlist-grid">
             <?php foreach ($canciones as $c): ?>
                 <div class="card playlist-card"
+                    data-song-id="<?php echo (int) $c['id']; ?>"
                     data-audio="player.php?id=<?php echo $c['id']; ?>"
                     data-title="<?php echo htmlspecialchars($c['title']); ?>"
                     data-artist="<?php echo htmlspecialchars($c['artist']); ?>"
@@ -169,7 +179,7 @@
             <h4 class="song-title">Cancion Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
         </div>
-        <button class="btn-icon like-btn"><i class="fa-regular fa-heart"></i></button>
+        <button class="btn-icon like-btn" type="button" aria-label="Dar o quitar like" disabled><i class="fa-regular fa-heart"></i></button>
     </div>
 
     <div class="player-controls">
