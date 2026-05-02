@@ -129,11 +129,31 @@ class User
              SET is_premium = 1,
                  premium_since = ?,
                  stripe_payment_id = ?,
-                 subscription_status = 'active'
+                 subscription_status = 'premium'
              WHERE id = ?"
         );
+
+        // Fallback para esquemas antiguos que aun no tienen todas las columnas premium.
+        if (!$stmt) {
+            $fallback = $conn->prepare("UPDATE users SET is_premium = 1 WHERE id = ?");
+            if (!$fallback) {
+                return false;
+            }
+            $fallback->bind_param("i", $userId);
+            return $fallback->execute();
+        }
+
         $stmt->bind_param("ssi", $now, $stripePaymentId, $userId);
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        $fallback = $conn->prepare("UPDATE users SET is_premium = 1 WHERE id = ?");
+        if (!$fallback) {
+            return false;
+        }
+        $fallback->bind_param("i", $userId);
+        return $fallback->execute();
     }
 
     public static function esPremium(int $userId): bool
