@@ -4,6 +4,27 @@ require_once __DIR__ . '/../model/userModel.php';
 class AuthController
 {
 
+    public static function validarPasswordFuerte($password)
+    {
+        if (strlen($password) < 8) {
+            return "La contraseña debe tener al menos 8 caracteres.";
+        }
+
+        if (!preg_match('/[A-Z]/', $password)) {
+            return "La contraseña debe incluir al menos una letra mayúscula.";
+        }
+
+        if (!preg_match('/[0-9]/', $password)) {
+            return "La contraseña debe incluir al menos un número.";
+        }
+
+        if (strpos($password, '-') === false) {
+            return "La contraseña debe incluir al menos un guion (-).";
+        }
+
+        return null;
+    }
+
     private static function obtenerClaveAdminEsperada()
     {
         $fromEnv = getenv('ADMIN_REGISTER_KEY');
@@ -40,6 +61,11 @@ class AuthController
 
     public static function register($name, $email, $password)
     {
+        $passwordError = self::validarPasswordFuerte($password);
+        if ($passwordError) {
+            return $passwordError;
+        }
+
         if (User::encontrarPorEmail($email)) {
             return "Ese correo electrónico ya está registrado";
         }
@@ -60,6 +86,11 @@ class AuthController
 
     public static function registerAdmin($name, $email, $password, $adminKey)
     {
+        $passwordError = self::validarPasswordFuerte($password);
+        if ($passwordError) {
+            return $passwordError;
+        }
+
         if (trim($adminKey) !== self::obtenerClaveAdminEsperada()) {
             return "Clave de alta admin incorrecta";
         }
@@ -146,8 +177,6 @@ class AuthController
 
             if ($name === '' || $email === '' || $password === '' || $adminKey === '') {
                 $error = 'Rellena todos los campos.';
-            } elseif (strlen($password) < 8) {
-                $error = 'La contraseña debe tener al menos 8 caracteres.';
             } else {
                 $error = self::registerAdmin($name, $email, $password, $adminKey) ?? '';
             }

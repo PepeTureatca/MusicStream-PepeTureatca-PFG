@@ -38,7 +38,7 @@
 
                 <div class="form-group">
                     <label for="password">Contrasena</label>
-                    <input type="password" id="password" name="password" placeholder="Minimo 8 caracteres" required>
+                    <input type="password" id="password" name="password" placeholder="Minimo 8 caracteres, mayuscula, numero y guion" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*-).{8,}$" title="Minimo 8 caracteres, con al menos una mayuscula, un numero y un guion (-)." required>
                 </div>
 
                 <div class="form-group">
