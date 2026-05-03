@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicStream - Cuenta</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
     <link rel="stylesheet" href="/mi-spotify/public/assets/css/dashboard.css">
     <link rel="stylesheet" href="/mi-spotify/public/assets/css/responsiveDashboard.css">
@@ -66,6 +67,11 @@
                 <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
+            <div class="plan-square <?php echo !empty($user['is_premium']) ? 'plan-premium' : 'plan-normal'; ?>">
+                <span class="plan-label">Plan actual</span>
+                <strong><?php echo !empty($user['is_premium']) ? 'Premium' : 'Usuario normal'; ?></strong>
+            </div>
+
             <div class="account-section">
                 <h3>Correo de acceso</h3>
                 <?php if (!empty($user['google_id'])): ?>
@@ -91,11 +97,11 @@
                     </div>
                     <div class="form-group">
                         <label for="new_password">Nueva contraseña</label>
-                        <input type="password" id="new_password" name="new_password" minlength="8" required>
+                        <input type="password" id="new_password" name="new_password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*-).{8,}$" title="Minimo 8 caracteres, con al menos una mayuscula, un numero y un guion (-)." required>
                     </div>
                     <div class="form-group">
                         <label for="confirm_password">Confirmar nueva contraseña</label>
-                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
+                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*-).{8,}$" title="Minimo 8 caracteres, con al menos una mayuscula, un numero y un guion (-)." required>
                     </div>
                     <button type="submit" class="btn-save">Cambiar contraseña</button>
                 </form>

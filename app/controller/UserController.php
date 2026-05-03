@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/userModel.php';
+require_once __DIR__ . '/AuthController.php';
 
 class UserController
 {
@@ -130,8 +131,8 @@ class UserController
             $error = "Rellena todos los campos de contraseña.";
         } elseif ($nueva !== $confirmar) {
             $error = "La nueva contraseña y la confirmación no coinciden.";
-        } elseif (strlen($nueva) < 8) {
-            $error = "La nueva contraseña debe tener al menos 8 caracteres.";
+        } elseif ($passwordError = AuthController::validarPasswordFuerte($nueva)) {
+            $error = $passwordError;
         } elseif (!User::verificarPassword($user['email'], $actual)) {
             $error = "La contraseña actual es incorrecta.";
         } else {

@@ -1,0 +1,169 @@
+/* --- PLAYER BAR --- */
+.player-bar {
+    height: 90px;
+    background-color: var(--player-bg);
+    border-top: 1px solid #282828;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+    transition: all 0.3s ease;
+}
+
+.song-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 30%;
+    min-width: 180px;
+}
+
+.player-cover-image {
+    width: 56px;
+    height: 56px;
+    background-color: #333;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.song-details h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.song-details p {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.like-btn {
+    margin-left: 1px;
+    color: var(--text-secondary);
+}
+
+.like-btn:hover {
+    color: var(--text-primary);
+}
+
+.like-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.like-btn.is-liked,
+.like-btn.is-liked:hover {
+    color: #ff4d6d;
+}
+
+.player-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    max-width: 722px;
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.btn-icon:hover {
+    color: white;
+}
+
+.play-pause {
+    font-size: 32px;
+    color: white;
+}
+
+.play-pause:hover {
+    transform: scale(1.05);
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 11px;
+    color: var(--text-secondary);
+    gap: 8px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background-color: #535353;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress {
+    height: 100%;
+    background-color: white;
+    border-radius: 2px;
+}
+
+.progress-bar:hover .progress {
+    background-color: var(--accent-color);
+}
+
+.volume-controls {
+    display: flex;
+    align-items: center;
+    width: 30%;
+    justify-content: flex-end;
+}
+
+.volume-bar {
+    width: 93px;
+    height: 4px;
+    background-color: #535353;
+    border-radius: 2px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.volume {
+    height: 100%;
+    background-color: var(--text-secondary);
+    border-radius: 2px;
+}
+
+.volume-bar:hover .volume {
+    background-color: white;
+}
+
+@media (max-width: 1024px) {
+    .player-bar {
+        flex-direction: column;
+        justify-content: center;
+        height: auto;
+        padding: 8px 16px;
+        gap: 8px;
+    }
+
+    .song-info,
+    .player-controls,
+    .volume-controls {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+}
