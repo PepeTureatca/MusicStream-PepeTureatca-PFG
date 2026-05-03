@@ -1,8 +1,10 @@
-﻿# 🎵 Mi Spotify
+﻿# 🎵 MusicStream
 
 Plataforma de streaming de música inspirada en Spotify, desarrollada como Trabajo de Fin de Grado. Permite subir, gestionar y reproducir canciones con un reproductor web completo, autenticación de usuarios (incluyendo Google OAuth), panel de administración y pagos con Stripe.
 
-**[Volver arriba](#-mi-spotify)**
+**[Repositorio GitHub](https://github.com/PepeTureatca/MusicStream-PepeTureatca-PFG)**
+
+**[Volver arriba](#-musicstream)**
 
 ---
 
@@ -91,7 +93,7 @@ composer --version
 Opción A — Si tienes Git:
 
 ```bash
-git clone <tu-repositorio> mi-spotify
+git clone https://github.com/PepeTureatca/MusicStream-PepeTureatca-PFG mi-spotify
 cd mi-spotify
 ```
 
