@@ -97,11 +97,11 @@
                     </div>
                     <div class="form-group">
                         <label for="new_password">Nueva contraseña</label>
-                        <input type="password" id="new_password" name="new_password" minlength="8" required>
+                        <input type="password" id="new_password" name="new_password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*-).{8,}$" title="Minimo 8 caracteres, con al menos una mayuscula, un numero y un guion (-)." required>
                     </div>
                     <div class="form-group">
                         <label for="confirm_password">Confirmar nueva contraseña</label>
-                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
+                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*-).{8,}$" title="Minimo 8 caracteres, con al menos una mayuscula, un numero y un guion (-)." required>
                     </div>
                     <button type="submit" class="btn-save">Cambiar contraseña</button>
                 </form>
