@@ -14,8 +14,8 @@ class PaymentController
 
         require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-        $stripeSecretKey = getenv('STRIPE_SECRET_KEY') ?: 'sk_test_51TQPBnE82ZzgUmDQBzWM8dkAiazdF7iKrkAVp1wfjPKzdfn9cEcWGTsNAL5LeWWpKGRMXnYpVL7Q3Kbo3G5SsBZQ007NGMGQ6n';
-        $stripePublishableKey = getenv('STRIPE_PUBLISHABLE_KEY') ?: 'pk_test_51TQPBnE82ZzgUmDQxe5BJevNee9IoJsoSjnFYz3QcD9gbGfZqcdmbdZSADx2Pqlqsu6ULZFjlEbfGGHgjayQyG3S00irtGizhI';
+        $stripeSecretKey      = getenv('STRIPE_SECRET_KEY');
+        $stripePublishableKey = getenv('STRIPE_PUBLISHABLE_KEY');
 
         $userId = (int) $_SESSION['user_id'];
         $userName = htmlspecialchars($_SESSION['user_name'] ?? 'Usuario', ENT_QUOTES, 'UTF-8');
@@ -87,7 +87,7 @@ class PaymentController
 
         require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-        $stripeSecretKey = getenv('STRIPE_SECRET_KEY') ?: 'sk_test_51TQPBnE82ZzgUmDQBzWM8dkAiazdF7iKrkAVp1wfjPKzdfn9cEcWGTsNAL5LeWWpKGRMXnYpVL7Q3Kbo3G5SsBZQ007NGMGQ6n';
+        $stripeSecretKey = getenv('STRIPE_SECRET_KEY');
 
         $sessionId = $_GET['session_id'] ?? null;
         $userId = (int) $_SESSION['user_id'];

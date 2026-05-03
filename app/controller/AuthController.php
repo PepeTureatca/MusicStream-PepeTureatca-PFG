@@ -27,12 +27,11 @@ class AuthController
 
     private static function obtenerClaveAdminEsperada()
     {
-        $fromEnv = getenv('ADMIN_REGISTER_KEY');
-        if ($fromEnv !== false && trim($fromEnv) !== '') {
-            return trim($fromEnv);
+        $key = getenv('ADMIN_REGISTER_KEY');
+        if ($key === false || trim($key) === '') {
+            throw new \RuntimeException('ADMIN_REGISTER_KEY no está configurada en el .env');
         }
-
-        return '180705';
+        return trim($key);
     }
 
     public static function login($email, $password)
