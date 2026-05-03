@@ -147,8 +147,8 @@
                     data-audio="player.php?id=<?php echo $c['id']; ?>"
                     data-title="<?php echo htmlspecialchars($c['title']); ?>"
                     data-artist="<?php echo htmlspecialchars($c['artist']); ?>"
-                    data-cover="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>">
-                    <img src="../uploads/artCover/<?php echo htmlspecialchars(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
+                    data-cover="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>">
+                    <img src="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
                     <h3 class="card-title"><?php echo htmlspecialchars($c['title']); ?></h3>
                     <p class="card-description"><?php echo htmlspecialchars($c['artist']); ?></p>
                     <form method="post" action="dashboardAdmin.php" class="admin-song-actions" onsubmit="return confirm('¿Seguro que quieres eliminar esta canción?');">
