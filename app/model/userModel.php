@@ -39,8 +39,6 @@ class User
     public static function crearUsuario($name, $email, $password)
     {
         $conn = conn();
-
-
         $hasheada = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
