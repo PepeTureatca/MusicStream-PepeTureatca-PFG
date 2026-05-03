@@ -125,37 +125,21 @@ La carpeta `vendor/` se creará automáticamente.
 
 ### Paso 3: Configurar variables de entorno
 
-Crea un archivo `.env` en la raíz del proyecto (usa `.env.example` como referencia si existe):
+**El archivo `.env` con todas las variables de entorno necesarias se proporciona en el ZIP de entrega de Aules.**
 
-```bash
-# ─── Base de datos local ──────────────────────────────────────────────────────
-DB_ENV=local
-DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASS=
-DB_NAME=mi_spotify_tfg
-DB_PORT=3306
+Copia el archivo `.env` a la raíz del proyecto. Este archivo contiene:
 
-# ─── Base de datos producción (opcional) ──────────────────────────────────────
-DB_HOST_PROD=
-DB_USER_PROD=
-DB_PASS_PROD=
-DB_NAME_PROD=
+- Credenciales de base de datos (local y producción)
+- Claves de Google OAuth 2.0
+- Claves de API de Stripe
+- Claves administrativas
 
-# ─── Google OAuth ─────────────────────────────────────────────────────────────
-GOOGLE_CLIENT_ID=tu_client_id_aqui
-GOOGLE_CLIENT_SECRET=tu_client_secret_aqui
-GOOGLE_REDIRECT_URI=http://localhost:8080/mi-spotify/public/google-callback.php
+**⚠️ IMPORTANTE:**
 
-# ─── Stripe ───────────────────────────────────────────────────────────────────
-STRIPE_SECRET_KEY=sk_test_xxxxx
-STRIPE_PUBLISHABLE_KEY=pk_test_xxxxx
-
-# ─── Administración ───────────────────────────────────────────────────────────
-ADMIN_REGISTER_KEY=180705
-```
-
-**⚠️ IMPORTANTE:** No compartas el archivo `.env` en repositorios públicos. Añádelo a `.gitignore`.
+- No compartas el archivo `.env` en repositorios públicos
+- Añádelo a `.gitignore`
+- Las claves en el `.env` son sensibles y deben mantenerse confidenciales
+- En caso de que necesites regenerar las claves, consulta la sección [Configuración](#-configuración)
 
 ### Paso 4: Crear la base de datos
 
@@ -312,6 +296,10 @@ icacls "uploads\artCover" /grant:r "IIS_IUSRS:(OI)(CI)F"
 
 ### Google OAuth 2.0
 
+Las claves de Google OAuth 2.0 ya están configuradas en el archivo `.env` proporcionado en el ZIP de Aules.
+
+**Si necesitas regenerar las claves** (por ejemplo, en producción):
+
 1. Ve a [Google Cloud Console](https://console.cloud.google.com)
 2. Crea un nuevo proyecto (o selecciona uno existente)
 3. Habilita la API de Google+:
@@ -321,26 +309,32 @@ icacls "uploads\artCover" /grant:r "IIS_IUSRS:(OI)(CI)F"
    - Tipo: Aplicación web
    - URIs autorizados:
      - `http://localhost:8080` (desarrollo)
-     - `http://127.0.0.1:8080`
+     - `http://tu-dominio.com` (producción)
    - URI de redirección autorizada:
-     - `http://localhost:8080/mi-spotify/public/google-callback.php`
+     - `http://localhost:8080/mi-spotify/public/google-callback.php` (desarrollo)
+     - `http://tu-dominio.com/mi-spotify/public/google-callback.php` (producción)
 5. Copia el Client ID y Client Secret al archivo `.env`:
    ```
-   GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
-   GOOGLE_CLIENT_SECRET=xxxxx
+   GOOGLE_CLIENT_ID=tu_new_client_id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=tu_new_client_secret
+   GOOGLE_REDIRECT_URI=http://tu-dominio/mi-spotify/public/google-callback.php
    ```
 
 ### Stripe
 
+Las claves de API de Stripe ya están configuradas en el archivo `.env` proporcionado en el ZIP de Aules (en modo **test**).
+
+**Si necesitas regenerar las claves** (por ejemplo, en producción):
+
 1. Crea una cuenta en [Stripe](https://stripe.com)
 2. Ve a Dashboard → Configuración → Claves API
-3. Usa las claves en modo **test**:
-   - Secret Key: `sk_test_xxxxx`
-   - Publishable Key: `pk_test_xxxxx`
-4. Añádelas al `.env`:
+3. Copia las claves:
+   - Secret Key (comenzará con `sk_test_` o `sk_live_`)
+   - Publishable Key (comenzará con `pk_test_` o `pk_live_`)
+4. Actualiza el archivo `.env`:
    ```
-   STRIPE_SECRET_KEY=sk_test_xxxxx
-   STRIPE_PUBLISHABLE_KEY=pk_test_xxxxx
+   STRIPE_SECRET_KEY=tu_nueva_secret_key
+   STRIPE_PUBLISHABLE_KEY=tu_nueva_publishable_key
    ```
 
 ---
@@ -423,7 +417,8 @@ mi-spotify/
 #### Administradores
 
 1. Solicita al administrador del proyecto la clave de registro
-2. Usa la clave `ADMIN_REGISTER_KEY` (por defecto: `180705`) durante el registro
+2. La clave se encuentra en la variable `ADMIN_REGISTER_KEY` del archivo `.env` proporcionado en el ZIP de Aules
+3. Usa esa clave durante el registro
 
 ### Panel de administración
 
