@@ -58,11 +58,12 @@ body {
 /* Tarjeta del formulario */
 .card {
     width: 100%;
-    background-color: #0f0f0f; /* Casi negro */
+    background-color: #0f0f0f;
+    /* Casi negro */
     border: 1px solid #222;
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .form-group {
@@ -102,7 +103,8 @@ body {
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 25px; /* Bordes muy redondos */
+    border-radius: 25px;
+    /* Bordes muy redondos */
     /* Degradado horizontal rosado-morado */
     background: linear-gradient(90deg, #9f7aea, #ed64a6);
     color: white;
