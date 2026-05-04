@@ -121,14 +121,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cards.forEach((card) => {
     card.addEventListener("click", (event) => {
-      if (event.target.closest(".admin-song-actions")) {
+      if (
+        event.target.closest(
+          ".admin-song-actions, .card-menu-btn, .remove-from-playlist-btn, .sidebar-playlist-delete",
+        )
+      ) {
         return;
       }
       loadTrack(card);
     });
 
     card.addEventListener("dblclick", async (event) => {
-      if (event.target.closest(".admin-song-actions")) {
+      if (
+        event.target.closest(
+          ".admin-song-actions, .card-menu-btn, .remove-from-playlist-btn",
+        )
+      ) {
         return;
       }
       if (!loadTrack(card)) {
