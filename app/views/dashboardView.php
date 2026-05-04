@@ -146,7 +146,7 @@ $currentPlaylist = $currentPlaylist ?? null;
 
 <div class="player-bar">
     <div class="song-info">
-        <img src="" alt="Portada" class="player-cover-image">
+        <img src="image.php?file=placeholder.png" alt="Portada" class="player-cover-image">
         <div class="song-details">
             <h4 class="song-title">Cancion Actual</h4>
             <p class="artist-name">Artista Desconocido</p>
