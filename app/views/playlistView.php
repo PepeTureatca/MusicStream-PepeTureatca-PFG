@@ -8,7 +8,9 @@
  * @var array  $playlists
  * @var array  $likedSongIds
  * @var int    $likesCount
+ * @var bool   $isPremium
  */
+$isPremium = $isPremium ?? false;
 $fmtDuration = function(int $secs): string {
     if ($secs <= 0) return '--:--';
     return sprintf('%d:%02d', intdiv($secs, 60), $secs % 60);
@@ -37,7 +39,8 @@ $pageTitle = htmlspecialchars($currentPlaylist['name'], ENT_QUOTES, 'UTF-8');
     data-current-view="playlist"
     data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>"
     data-playlists="<?php echo htmlspecialchars(json_encode(array_map(fn($p) => ['id' => (int)$p['id'], 'name' => $p['name']], $playlists)), ENT_QUOTES, 'UTF-8'); ?>"
-    data-playlist-id="<?php echo (int) $playlistId; ?>">
+    data-playlist-id="<?php echo (int) $playlistId; ?>"
+    data-is-premium="<?php echo $isPremium ? '1' : '0'; ?>">
 <div class="dashboard-container">
     <aside class="sidebar">
         <div class="logo-container">
@@ -218,7 +221,7 @@ $pageTitle = htmlspecialchars($currentPlaylist['name'], ENT_QUOTES, 'UTF-8');
 
 <div class="player-bar">
     <div class="song-info">
-        <img src="" alt="Portada" class="player-cover-image">
+        <img src="image.php?file=placeholder.png" alt="Portada" class="player-cover-image">
         <div class="song-details">
             <h4 class="song-title">Cancion Actual</h4>
             <p class="artist-name">Artista Desconocido</p>

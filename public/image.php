@@ -8,5 +8,7 @@ if (!file_exists($path)) {
     exit;
 }
 
-header('Content-Type: image/jpeg');
+$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+$mime = ($ext === 'png') ? 'image/png' : (($ext === 'webp') ? 'image/webp' : 'image/jpeg');
+header('Content-Type: ' . $mime);
 readfile($path);
