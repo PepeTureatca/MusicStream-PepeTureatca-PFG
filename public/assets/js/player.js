@@ -37,6 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentView = pageBody?.dataset.currentView || "all";
   let selectedTrack = null;
   let currentSongId = null;
+  let currentIndex = -1;
+  let repeatMode = false;
+
+  // Botones de control extra
+  const prevBtn = document
+    .querySelector(".control-buttons .fa-backward-step")
+    ?.closest("button");
+  const nextBtn = document
+    .querySelector(".control-buttons .fa-forward-step")
+    ?.closest("button");
+  const repeatBtn = document
+    .querySelector(".control-buttons .fa-repeat")
+    ?.closest("button");
+  const shuffleBtn = document
+    .querySelector(".control-buttons .fa-shuffle")
+    ?.closest("button");
 
   const setPlayIcon = (isPlaying) => {
     playBtn.innerHTML = isPlaying
@@ -59,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedTrack = card;
     currentSongId = Number(card.dataset.songId || 0) || null;
+    currentIndex = cards.indexOf(card);
     document.querySelector(".song-title").textContent =
       card.dataset.title || "Cancion Actual";
     document.querySelector(".artist-name").textContent =
@@ -157,7 +174,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   audio.addEventListener("play", () => setPlayIcon(true));
   audio.addEventListener("pause", () => setPlayIcon(false));
-  audio.addEventListener("ended", () => setPlayIcon(false));
+  audio.addEventListener("ended", () => {
+    setPlayIcon(false);
+    if (repeatMode) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } else if (cards.length > 1) {
+      const nextIndex = (currentIndex + 1) % cards.length;
+      if (loadTrack(cards[nextIndex])) {
+        audio.play().catch(() => {});
+      }
+    }
+  });
+
+  // Anterior
+  prevBtn?.addEventListener("click", () => {
+    if (cards.length === 0) return;
+    const idx = currentIndex <= 0 ? cards.length - 1 : currentIndex - 1;
+    if (loadTrack(cards[idx])) {
+      if (!audio.paused) audio.play().catch(() => {});
+    }
+  });
+
+  // Siguiente
+  nextBtn?.addEventListener("click", () => {
+    if (cards.length === 0) return;
+    const idx = currentIndex < 0 ? 0 : (currentIndex + 1) % cards.length;
+    if (loadTrack(cards[idx])) {
+      if (!audio.paused) audio.play().catch(() => {});
+    }
+  });
+
+  // Repetir
+  repeatBtn?.addEventListener("click", () => {
+    repeatMode = !repeatMode;
+    repeatBtn.classList.toggle("is-active", repeatMode);
+    repeatBtn.style.color = repeatMode ? "var(--accent-color)" : "";
+  });
 
   // Progreso
   audio.addEventListener("timeupdate", () => {
