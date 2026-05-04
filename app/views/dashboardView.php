@@ -117,31 +117,47 @@ $isPremium       = $isPremium       ?? false;
 
         <h2 class="section-title"><?php echo htmlspecialchars($sectionTitle); ?></h2>
 
-        <div class="grid-container playlist-grid">
-    <?php if (empty($canciones)): ?>
-        <p class="empty-state-message">No hay canciones en esta vista todavia.</p>
-    <?php endif; ?>
-    <?php foreach ($canciones as $c): ?>
-        <div class="card playlist-card"
-            data-song-id="<?php echo (int) $c['id']; ?>"
-            data-audio="player.php?id=<?php echo $c['id']; ?>"
-            data-title="<?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?>"
-            data-artist="<?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?>"
-            data-cover="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>">
+        <?php if (empty($canciones)): ?>
+            <p class="empty-state-message">No hay canciones en esta vista todavia.</p>
+        <?php else: ?>
+            <?php
+                $genreGroups = [];
+                foreach ($canciones as $c) {
+                    $genre = $c['genre'] ?? 'Sin Genero';
+                    if (!isset($genreGroups[$genre])) {
+                        $genreGroups[$genre] = [];
+                    }
+                    $genreGroups[$genre][] = $c;
+                }
+            ?>
+            <?php foreach ($genreGroups as $genre => $songs): ?>
+            <div class="genre-section">
+                <h3 class="genre-title"><?php echo htmlspecialchars($genre); ?></h3>
+                <div class="grid-container playlist-grid">
+                    <?php foreach ($songs as $c): ?>
+                    <div class="card playlist-card"
+                        data-song-id="<?php echo (int) $c['id']; ?>"
+                        data-audio="player.php?id=<?php echo $c['id']; ?>"
+                        data-title="<?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?>"
+                        data-artist="<?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?>"
+                        data-cover="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>">
 
-            <div class="card-cover-wrapper">
-                <img src="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
+                        <div class="card-cover-wrapper">
+                            <img src="image.php?file=<?php echo urlencode(basename($c['cover_url'])); ?>" alt="Portada" class="card-image-placeholder">
+                        </div>
+
+                        <h3 class="card-title"><?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <p class="card-description"><?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?></p>
+
+                        <div class="card-footer">
+                            <button class="btn-icon card-menu-btn" data-song-id="<?php echo (int) $c['id']; ?>" title="Opciones"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-
-            <h3 class="card-title"><?php echo htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p class="card-description"><?php echo htmlspecialchars($c['artist'], ENT_QUOTES, 'UTF-8'); ?></p>
-
-            <div class="card-footer">
-                <button class="btn-icon card-menu-btn" data-song-id="<?php echo (int) $c['id']; ?>" title="Opciones"><i class="fa-solid fa-ellipsis"></i></button>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </main>
 </div>
 

@@ -428,3 +428,17 @@ body {
     overflow: hidden;
     line-height: 1.4;
 }
+
+/* --- SECCIONES POR GÉNERO --- */
+.genre-section {
+    margin-bottom: 48px;
+}
+
+.genre-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    padding-left: 4px;
+}
