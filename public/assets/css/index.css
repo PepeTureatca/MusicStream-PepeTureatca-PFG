@@ -164,3 +164,30 @@ body {
     color: #555;
     line-height: 1.4;
 }
+
+.eco-note {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.eco-text {
+    font-size: 11px;
+    line-height: 1.45;
+    color: #9ca3af;
+}
+
+.eco-green {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.eco-meter {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.eco-value {
+    font-weight: 700;
+    color: #d1d5db;
+}
