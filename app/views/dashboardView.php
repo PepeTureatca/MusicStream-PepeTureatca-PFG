@@ -9,6 +9,7 @@ $canciones       = $canciones       ?? [];
 $playlists       = $playlists       ?? [];
 $playlistId      = $playlistId      ?? 0;
 $currentPlaylist = $currentPlaylist ?? null;
+$isPremium       = $isPremium       ?? false;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,7 +25,7 @@ $currentPlaylist = $currentPlaylist ?? null;
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body data-current-view="<?php echo htmlspecialchars($currentView, ENT_QUOTES, 'UTF-8'); ?>" data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>" data-playlists="<?php echo htmlspecialchars(json_encode(array_map(fn($p) => ['id' => (int)$p['id'], 'name' => $p['name']], $playlists)), ENT_QUOTES, 'UTF-8'); ?>" data-playlist-id="<?php echo (int) $playlistId; ?>">
+<body data-current-view="<?php echo htmlspecialchars($currentView, ENT_QUOTES, 'UTF-8'); ?>" data-liked-song-ids="<?php echo htmlspecialchars(json_encode($likedSongIds), ENT_QUOTES, 'UTF-8'); ?>" data-playlists="<?php echo htmlspecialchars(json_encode(array_map(fn($p) => ['id' => (int)$p['id'], 'name' => $p['name']], $playlists)), ENT_QUOTES, 'UTF-8'); ?>" data-playlist-id="<?php echo (int) $playlistId; ?>" data-is-premium="<?php echo $isPremium ? '1' : '0'; ?>">
 <div class="dashboard-container">
     <aside class="sidebar">
         <div class="logo-container">

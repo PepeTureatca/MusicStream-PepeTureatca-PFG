@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/songModel.php';
+require_once __DIR__ . '/../model/userModel.php';
 
 class SongController
 {
@@ -272,6 +273,7 @@ class SongController
         $likedSongIds = Song::obtenerIdsLikePorUsuario($userId);
         $likesCount   = count($likedSongIds);
         $playlists    = Playlist::obtenerPorUsuario($userId);
+        $isPremium    = !empty($_SESSION['is_premium']) || User::esPremium($userId);
 
         require_once __DIR__ . '/../views/dashboardView.php';
     }
